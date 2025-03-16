@@ -1,0 +1,2 @@
+# AIDI1001_ConversationalAI_Flask-Dialogflow-Chatbot
+ This project is part of the AIDI 1003 – Conversational AI course. It involves the development of a conversational AI chatbot using Flask and Dialogflow, integrating both frontend and backend components. The application enables real-time interaction between users and the bot, providing an engaging chat interface for users to query and receive responses.
