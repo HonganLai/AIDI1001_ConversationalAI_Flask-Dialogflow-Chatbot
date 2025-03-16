@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> <!-- 引用 CSS 文件 -->
+  <script src="static/js/chat.js" defer></script>
+  <script src="static/js/Student_Number.js" defer></script>
+</head>
+<body>
+  
+  <h1>AIDI 1003 – Final Project</h1>
+  <h2 class="title-Description">Description</h2>
+  <p class="content-Description">Yunyun is your good shopping assistant for all your gift purchase needs! Whether you want to  buy a beautiful gift for who you love or need help with personalization, Yunyun will help you! She is patient to answer your questions about product details, how to use coupon, making your shopping experience more easy. Let Yunyun take care of the details, so you can focus on giving the perfect gift!
+  </p>
+  <h2 class="title-R1">Route #1</h2>
+  <h2 class="title-R2">Route #2</h2>
+
+  <!-- Route #1 -->
+  <p class="content-R1">After the route 'StudentNumber' return my student number through JSON format, the front-end part will display my student number: <span id="student-number-display"></span></p>
+
+  <!-- Start Chat Button -->
+  <img src="static/image/Start_Chat.png" class="chat-trigger" onclick="toggleChat()" alt="Start Chat" />
+
+  <!-- Chat Window -->
+  <div class="chat-modal" id="chatModal">
+      <div class="chat-header">Yunyun</div>
+      <div class="chat-body" id="chatBody"></div>
+      <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Type your message..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <img src="static/image/send.png" class="send-button" onclick="sendMessage()" alt="Send">
+      </div>
+  </div>
+  
+
+  <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>

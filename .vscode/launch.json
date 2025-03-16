@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Python: Flask",
+        "type": "python",
+        "request": "launch",
+        "program": "${workspaceFolder}/app.py",  // 这里是你的 Flask 主程序文件
+        "args": [
+          "run"  // 启动 Flask 应用
+        ],
+        "jinja": true,
+        "env": {
+          "FLASK_ENV": "development",
+          "FLASK_APP": "app.py",  // Flask 项目的入口文件
+          "FLASK_DEBUG": "1"
+        },
+        "envFile": "${workspaceFolder}/.env",  // 如果你使用 .env 文件来管理环境变量
+        "console": "integratedTerminal",
+        "justMyCode": true
+      }
+    ]
+  }  
