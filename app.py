@@ -18,7 +18,7 @@ def home():
 # Route1: student number
 @app.route('/StudentNumber')
 def student_number():
-    STUDENT_NUMBER = os.getenv("STUDENT_NUMBER")
+    STUDENT_NUMBER = os.getenv("DIALOGFLOW_PROJECT_ID")
     if STUDENT_NUMBER:
         student_data = {"student_number": STUDENT_NUMBER}
         return jsonify(student_data)
