@@ -163,6 +163,7 @@ h1 {
 .bot-message .message-text {
     background: #8eb6ee;
     color: rgb(14, 1, 1);
+    padding: 10px;
     border-radius: 15px;
     max-width: 70%;
     text-align: left;
