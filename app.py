@@ -57,6 +57,7 @@ def detect_intent():
 # Route3: Dialogflow Webhook for Weather Query
 @app.route('/webhook', methods=['POST'])
 def webhook():
+    print("Webhook request received!")  # 打印调试信息到Heroku日志中
     req = request.get_json()
     intent_name = req.get("queryResult", {}).get("intent", {}).get("displayName")
     parameters = req.get("queryResult", {}).get("parameters", {})
