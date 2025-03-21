@@ -57,7 +57,6 @@ def detect_intent():
 # Route3: Dialogflow Webhook for Weather Query
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    print("Webhook request received!")  # 打印调试信息到Heroku日志中
     req = request.get_json()
     intent_name = req.get("queryResult", {}).get("intent", {}).get("displayName")
     parameters = req.get("queryResult", {}).get("parameters", {})
@@ -73,36 +72,11 @@ def webhook():
         if "current" in weather_data:
             temperature = weather_data["current"].get("temperature")
             weather_desc = weather_data["current"].get("weather_descriptions", ["Unknown"])[0]
-            icon_url = f"https://www.weatherstack.com/images/weather-icons/{weather_data['current'].get('weather_icons', ['default.png'])[0]}"
-            
-            # 构建卡片响应
-            card_response = { 
-                "fulfillmentMessages": [
-                    {
-                        "card": {
-                            "title": f"Weather in {city}",
-                            "subtitle": weather_desc,
-                            "imageUri": icon_url,  # 图标 URL
-                            "buttons": [
-                                {
-                                    "text": "More details",
-                                    "postback": "https://example.com/weather-details"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "text": {
-                            "text": [f"The temperature is {temperature}°C."]
-                        }
-                    }
-                ]
-            }
-            
-            return jsonify(card_response)
+            response_text = f"The current weather in {city} is {weather_desc} with a temperature of {temperature}°C."
         else:
             response_text = "I'm sorry, I couldn't fetch the weather information at the moment."
-            return jsonify({"fulfillmentText": response_text})
+        
+        return jsonify({"fulfillmentText": response_text})
     
     return jsonify({"fulfillmentText": "I'm not sure how to handle that request."})
 
