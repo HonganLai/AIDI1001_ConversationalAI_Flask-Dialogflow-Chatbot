@@ -78,7 +78,30 @@ def webhook():
         
         return jsonify({"fulfillmentText": response_text})
     
+    if intent_name == "Greeting Messages":
+        receiver = parameters.get("Gift_Receiver")
+        if not receiver:
+            return jsonify({
+                "fulfillmentText": "Please provide the name of the gift recipient."
+            })
+
+        # 获取用户输入的祝福语
+        greeting_message = parameters.get("Greeting_Message")
+        if not greeting_message:
+            return jsonify({
+                "fulfillmentText": "Please provide the greeting message you'd like to include."
+            })
+
+        # 构建确认信息
+        confirmation_text = f"Dear {receiver}, your message is: {greeting_message}. Do you confirm? (y/n)"
+
+        return jsonify({
+            "fulfillmentText": confirmation_text
+        })
+
     return jsonify({"fulfillmentText": "I'm not sure how to handle that request."})
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
