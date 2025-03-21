@@ -80,20 +80,37 @@ def webhook():
     
     if intent_name == "Greeting Messages":
         receiver = parameters.get("Gift_Receiver")
-        greeting_message = parameters.get("Greeting")  # 这里使用 sys.any 获取祝福语
+        greeting_message = parameters.get("Greeting")  # 获取祝福语
 
+        # 如果没有提供收礼人或祝福语
         if not receiver:
             return jsonify({"fulfillmentText": "Who is the recipient of this greeting card?"})
-        
+
         if not greeting_message:
             return jsonify({"fulfillmentText": "What message would you like to write on the card?"})
 
+        # 保存用户输入的收礼人和祝福语到会话中，等待确认
+        user_sessions[session_id] = {"waiting_for_confirmation": True, "receiver": receiver, "greeting_message": greeting_message}
+        
         # 询问用户确认
         confirmation_text = f"Dear {receiver}, your message is: \"{greeting_message}\". Do you confirm? (y/n)"
         return jsonify({"fulfillmentText": confirmation_text})
 
-    return jsonify({"fulfillmentText": "I'm not sure how to handle that request."})
+    # 处理用户的确认输入（y/n）
+    user_response = parameters.get("sys.any")  # 获取用户的 y 或 n
 
+    # 如果用户确认
+    if user_response and user_response.lower() == 'y':
+        return jsonify({"fulfillmentText": f"Your greeting to {receiver} has been saved: '{greeting_message}'."})
+
+    # 如果用户不确认，重新要求输入祝福语
+    elif user_response and user_response.lower() == 'n':
+        return jsonify({"fulfillmentText": "Please provide a new greeting message."})
+
+    else:
+        return jsonify({"fulfillmentText": "I didn't understand that. Please respond with 'y' or 'n'."})
+
+    return jsonify({"fulfillmentText": "   I'm not sure how to handle that request."}) 
 
 
 if __name__ == '__main__':
