@@ -1,5 +1,6 @@
-import os
+import os 
 import json
+import requests
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
 from google.oauth2 import service_account
@@ -8,14 +9,15 @@ from google.cloud import dialogflow_v2 as dialogflow
 # Load environment variables from .env file
 load_dotenv()
 
-# Set Google Cloud API credentials using environment variable (from Heroku's config)
+# Set Google Cloud API
 google_credentials_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-
-# Parse the credentials JSON string from the environment variable
 credentials_info = json.loads(google_credentials_json)
 credentials = service_account.Credentials.from_service_account_info(credentials_info)
-
 DIALOGFLOW_PROJECT_ID = os.getenv("DIALOGFLOW_PROJECT_ID")
+
+# Set Weather API
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+WEATHER_API_URL = "http://api.weatherstack.com/current"
 
 app = Flask(__name__)
 
@@ -51,6 +53,32 @@ def detect_intent():
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"reply": "Sorry, I didn't understand that."}), 500
+
+# Route3: Dialogflow Webhook for Weather Query
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    req = request.get_json()
+    intent_name = req.get("queryResult", {}).get("intent", {}).get("displayName")
+    parameters = req.get("queryResult", {}).get("parameters", {})
+    
+    if intent_name == "WeatherQuery":
+        city = parameters.get("geo-city")
+        if not city:
+            return jsonify({"fulfillmentText": "Which city do you want to check the weather in?"})
+        
+        weather_response = requests.get(WEATHER_API_URL, params={"access_key": WEATHER_API_KEY, "query": city})
+        weather_data = weather_response.json()
+        
+        if "current" in weather_data:
+            temperature = weather_data["current"].get("temperature")
+            weather_desc = weather_data["current"].get("weather_descriptions", ["Unknown"])[0]
+            response_text = f"The current weather in {city} is {weather_desc} with a temperature of {temperature}°C."
+        else:
+            response_text = "I'm sorry, I couldn't fetch the weather information at the moment."
+        
+        return jsonify({"fulfillmentText": response_text})
+    
+    return jsonify({"fulfillmentText": "I'm not sure how to handle that request."})
 
 if __name__ == '__main__':
     app.run(debug=True)
